@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tools Signal GFX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    nav {
+      background-color: #343a40;
+      padding: 1rem;
+      color: white;
+    }
+
+    nav .navbar-brand {
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background-color: #0d6efd;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    .form-control, .form-select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ced4da;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      background-color: #198754;
+      color: white;
+      padding: 0.7rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #157347;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .alert-info {
+      background-color: #e2f0fb;
+      color: #0c5460;
+    }
+
+    .alert-danger {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="navbar-brand">Tools Share Signal GFX</a>
+</nav>
+<!-- NAVBAR END -->
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">Kalkulator Pips Forex</div>
+    <div class="card-body">
+      <form id="kalkulator-form">
+        <label for="pair" class="form-label">Pair</label>
+        <select id="pair" name="pair" class="form-select" required>
+          <option disabled selected>-- Pilih Pair --</option>
+          <option value="XAUUSD">XAUUSD</option>
+          <option value="EURUSD">EURUSD</option>
+          <option value="GBPUSD">GBPUSD</option>
+          <option value="AUDUSD">AUDUSD</option>
+          <option value="USDCAD">USDCAD</option>
+          <option value="USDCHF">USDCHF</option>
+          <option value="NZDUSD">NZDUSD</option>
+          <option value="EURGBP">EURGBP</option>
+          <option value="EURCAD">EURCAD</option>
+          <option value="EURCHF">EURCHF</option>
+          <option value="GBPCHF">GBPCHF</option>
+          <option value="AUDCAD">AUDCAD</option>
+          <option value="AUDNZD">AUDNZD</option>
+          <option value="USDJPY">USDJPY</option>
+          <option value="EURJPY">EURJPY</option>
+          <option value="GBPJPY">GBPJPY</option>
+          <option value="AUDJPY">AUDJPY</option>
+          <option value="NZDJPY">NZDJPY</option>
+        </select>
+
+        <label for="op" class="form-label">Posisi</label>
+        <select id="op" name="op" class="form-select" required>
+          <option disabled selected>-- Pilih Posisi --</option>
+          <option value="buy">Buy</option>
+          <option value="sell">Sell</option>
+        </select>
+
+        <label for="harga" class="form-label">Harga Open Posisi</label>
+        <input type="number" step="any" id="harga" name="harga" class="form-control" placeholder="Contoh: 3350.39" required>
+
+        <button type="submit">Hitung & Kirim ke Telegram</button>
+      </form>
+
+      <div id="hasil" class="alert alert-info"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Kalkulasi Logic -->
+<script>
+  const form = document.getElementById("kalkulator-form");
+  const hasilDiv = document.getElementById("hasil");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const pair = document.getElementById("pair").value;
+    const op = document.getElementById("op").value;
+    const harga = document.getElementById("harga").value;
+
+    try {
+      const res = await fetch('https://kalkulator-api-v4.vercel.app/api/kalkulator', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pair, op, harga })
+      });
+
+      const data = await res.json();
+      hasilDiv.textContent = data.hasil || "Hasil tidak tersedia.";
+      hasilDiv.className = "alert alert-info";
+      hasilDiv.style.display = "block";
+    } catch (err) {
+      console.error("Error:", err);
+      hasilDiv.textContent = "Terjadi kesalahan saat mengirim data.";
+      hasilDiv.className = "alert alert-danger";
+      hasilDiv.style.display = "block";
+    }
+  });
+</script>
+
+</body>
+</html>
